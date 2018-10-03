@@ -1,3 +1,31 @@
+<?php	
+    session_start();
+	$tipoDeCuenta = $_SESSION['tipoCuenta'];
+	if(!empty($tipoDeCuenta)){
+		switch($tipoDeCuenta){
+			default: //Sin cuenta
+				//Redireccionar a una pantalla de error
+				//header('Location: ./error/cuenta.php');
+			break;	
+			
+			case 'visitante': //Visitante
+				//header('Location: ./admin/registro.php');
+			break;
+			
+			case 'usuario': //Usuario
+				//header('Location: ./admin/registro.php');
+			break;
+			
+			case 'dasu': //DASU
+				//header('Location: ./admin/registro.php');
+			break;
+			
+			case 'admin': //Admin
+				header('Location: ./admin/registro.php');
+			break;
+		}
+	}	
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -82,15 +110,54 @@
 			alert("Todos los campos son obligatorios");
 		}      
     }
+	
+	function manejaUsuarioExistente(){
+		
+	var userId = firebase.auth().currentUser.uid;
+	var referenciaInicio = firebase.database().ref('/usuarios/' + userId);
+
+	referenciaInicio.once('value').then(function(snapshot) {
+        if (snapshot.exists()){
+			var tipoCuentaActual = (snapshot.val() && snapshot.val().tipoCuenta) || 'Anonymous';
+			switch(tipoCuentaActual){
+				case 'visitante':
+					alert('Aún no existe esta página');
+					break;
+				case 'usuario':
+					alert('Aún no existe esta página');
+					break;
+				case 'dasu':
+					alert('Aún no existe esta página');
+					break;
+				case 'admin':
+					//Es Admin
+					//Redirijimos a la cuenta de admin
+					$.ajax({ url: './process/userManagement.php',
+							data: {action: 'login',tipoCuenta: tipoCuentaActual},
+							type: 'post',
+							success:
+								function() {							
+									window.location.replace("http://cabi.dx.am/admin/");
+								}
+						});
+					break;
+			  default: break;
+		  }
+        }else{
+			console.log('No existe usuario en nuestra BD');
+        }
+      });
+    }
 	  
       function initApp() {
           // Auth state changes.
           // [START authstatelistener]
           firebase.auth().onAuthStateChanged(function(user){
               if (user) {
-					console.log("Hay un usuario");
+					console.log("Hay un usuario");					
 					document.getElementById('btnCerrarSesion').disabled = false;
 					document.getElementById('btnAccederConCorreo').disabled = true;
+					manejaUsuarioExistente();
                   // User is signed in
 				  /*
                   protocoloDeSeguridad();
@@ -100,16 +167,6 @@
 					console.log("El usuario no ha iniciado sesión");
 					document.getElementById('btnCerrarSesion').disabled = true;
 					document.getElementById('btnAccederConCorreo').disabled = false;
-                  //Logout
-				  /*
-                  $.ajax({ url: '../process/userManagement.php',
-                      data: {action: 'logout',tipoCuenta: ''},
-                      type: 'post',
-                      success: function() {
-                                  window.location.replace("http://socketpwr.com/fisioterapp/");
-                              }
-                  });
-				  */
               }
           });
 		  document.getElementById('btnCerrarSesion').addEventListener('click', cerrarSesion, false);
@@ -127,12 +184,13 @@
 </head>
 
 <body>
-	<p>Hola mundo!</p>
-	<button id="btnCerrarSesion">Cerrar sesión</button>
-	<p>ingresar</p>
+	<p>Hola mundo! Esto es CABI</p>
+	
+	<p>Ingresar</p>
 	<input id="inputEmail" type="mail" class="form-control" placeholder="juan@mail.com">
 	<input id="inputPass" type="password" class="form-control" placeholder="*********">
 	<button id="btnAccederConCorreo">Acceder</button> 
+	<button id="btnCerrarSesion">Cerrar sesión</button>
 	
 	
   <!-- End custom js for this page-->
