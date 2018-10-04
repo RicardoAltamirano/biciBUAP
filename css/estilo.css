@@ -1,0 +1,223 @@
+/*
+#00b5e2 azul claro
+#003b5c azul oscuro
+*/
+
+html{
+	font-family: 'Open Sans', sans-serif;
+	font-size: 95%;
+	margin: 0;
+}
+
+body{
+	font-family: 'Open Sans', sans-serif;
+	width: 100%;
+}
+
+.textoBlanco{
+	color: #fff;
+}
+
+.contenedorBlanco{
+	margin: 48px auto;
+	background: rgba(0, 59, 92, 0.65);
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+	border: 3px solid #00b5e2;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#contenedorAccesoUsuario{
+	width: 100%;
+	display: inline-block;
+}
+
+.contenedorCamposAcceso{
+	width: 35%;
+	margin: 0 auto;
+}
+
+.contenedorEtiquetaCampoAcceso{
+	width: 100%;
+	font-size: 1.1rem;
+    font-family: 'Open Sans', sans-serif;
+	display: inline-block;
+}
+
+button.aceptar{
+	margin: 10px auto;
+	width: 50%;	
+}
+
+#qrCanvas{
+	margin: 0 auto;
+}
+
+.celdaBoton{
+	width: 90%;
+	margin: 0 auto;
+}
+
+.espacioArriba{
+	margin-top: 5px;
+}
+
+.contenedorCampos{
+	width: 45%;
+	margin: 0 auto;
+}
+
+.contenedorCamposTabla{
+	width: 80%;
+	margin: 0 auto;
+}
+
+.form-group.required .control-label:after { 
+   content:"*";
+   color:red;
+}
+
+#contenedorRegistroUsuario{
+	width: 100%;
+	display: inline-block;
+}
+
+.contenedorEtiquetaCampo{
+	width: 30%;
+	font-size: 1.1rem;
+    font-family: 'Open Sans', sans-serif;
+	display: inline-block;
+}
+
+input{
+	display: inline-block;
+	width: 69.5%;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+    border-radius: 4px;
+	font-size: 1.1rem;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+select{ 
+	width: 69.5%;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+    border-radius: 4px;
+	font-size: 1.1rem;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1{
+	font-family: 'Open Sans', sans-serif;
+	font-size: 2.2rem;
+}
+
+h2{
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1.9em;
+}
+
+h3{
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1.4rem;
+}
+
+.segundoTitulo{
+	margin-top: 10px;
+}
+
+/*Comienza blur*/
+.content:before {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  
+  display: block;
+  /*background-image: url('http://666a658c624a3c03a6b2-25cda059d975d2f318c03e90bcf17c40.r92.cf1.rackcdn.com/unsplash_527bf56961712_1.JPG');*/
+  
+  background: url('../img/biciInicio.jpg');
+  width: 100%;
+  min-height: 800px;
+  background-size: cover;
+  
+  /*
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  */
+  
+  -webkit-filter: blur(3px);
+  -moz-filter: blur(3px);
+  -o-filter: blur(3px);
+  -ms-filter: blur(3px);
+  filter: blur(3px);
+}
+
+.content {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 0;
+}
+
+@media screen and (max-width: 680px) {
+	.contenedorCampos{
+		width: 90%;
+	}
+	.contenedorEtiquetaCampo{
+		width: 100%;
+	}
+	input{
+		width: 100%;
+	}
+	select{ 
+		width: 100%;
+	}
+	.contenedorCamposTabla{
+		width: 90%;
+		margin: 0 auto;
+	}
+	.contenedorCamposAcceso{
+		width: 90%;
+	}
+	.contenedorBlanco{
+		margin: 15px auto;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.contenedorCampos{
+		width: 90%;
+	}
+	.contenedorEtiquetaCampo{
+		width: 100%;
+	}
+	input{
+		width: 100%;
+	}
+	select{ 
+		width: 100%;
+	}
+	.contenedorCamposTabla{
+		width: 90%;
+		margin: 0 auto;
+	}
+	.contenedorCamposAcceso{
+		width: 90%;
+	}
+	.contenedorBlanco{
+		margin: 15px auto;
+	}
+}
