@@ -1,3 +1,34 @@
+<?php	
+    session_start();
+	$tipoDeCuenta = $_SESSION['tipoCuenta'];
+	if(!empty($tipoDeCuenta)){
+		switch($tipoDeCuenta){
+			default: //Ninguna cuenta
+				//Redireccionar a login
+				header('Location: ../index.php');
+			break;	
+			
+			case 'visitante': //Visitante
+				//header('Location: ./admin/registro.php');
+			break;
+			
+			case 'usuario': //Usuario
+				//header('Location: ./admin/registro.php');
+			break;
+			
+			case 'dasu': //DASU
+				//header('Location: ./admin/registro.php');
+			break;
+			
+			case 'admin': //Admin
+				//No hacer nada
+			break;
+		}
+	}else{
+		//Redireccionar a login
+		header('Location: ../index.php');
+	}	
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -45,6 +76,7 @@
 	Los objetos de la BD son
 	
 	var objetoUsuario={
+		uid: google account,
 		email: "correo@juan.com", //variable
 		nombre: "Juan"
 		aP: "Perez",
@@ -57,13 +89,13 @@
 		marca: "Bennotto"
 		color: "Azul",
 		rodada: "26",
-		email: "correo@juan.com"
+		uid: google uid
 	};
 	
 	var objetoBitacora={
 		id: "Adsasa", //variable
 		idBici: "AKSDAJS"
-		email: "correo@juan.com",
+		uid: google uid,
 		fechaEntrada: "26/10/09 15:35:23",
 		fechaSalida: "26/10/09 18:30:13"
 		lugarEntrada: "A7"
@@ -86,20 +118,32 @@
 	  
 	  var secondaryApp = firebase.initializeApp(config, "Secondary");
 
+	  
+	  
 	  function hayCamposVacios(){
-		var correo = document.getElementById('inputEmail').value;
-		var pass = document.getElementById('inputPass').value;					
-		var nombreUsuario = document.getElementById("inputNombre").value;
-		var apUsuario = document.getElementById("inputAP").value;
-		var amUsuario = document.getElementById("inputAM").value;
-		return correo == "" || pass == "" || nombreUsuario == "" || apUsuario == "" || amUsuario == "";
+		 	var correo = document.getElementById('inputEmail').value;
+			var pass = document.getElementById('inputPass').value;					
+			var nombreUsuario = document.getElementById("inputNombre").value;
+			var apUsuario = document.getElementById("inputAP").value;			
+			var rodada = document.getElementById("inputRodada").value;
+			
+		if(!cuentaUsuarioSeleccionado()){			
+			return correo == "" || pass == "" || nombreUsuario == "" || apUsuario == "";
+		}else{
+			return correo == "" || pass == "" ||
+			nombreUsuario == "" || apUsuario == "" ||
+			rodada == "";
+		}
 	  }
 	  
       function registroPorCorreo() {
 		var correo = document.getElementById('inputEmail').value;
 		var pass = document.getElementById('inputPass').value;		
 		
-		if(!hayCamposVacios()){		
+		if(!hayCamposVacios()){
+			r = confirm('Comprueba que los datos sean correctos\n¿Continuar con el registro?');
+			if(r == true){
+		
 			secondaryApp.auth().createUserWithEmailAndPassword(correo,pass).then(function(credential){
 				
 				//Negamos que se inicie la sesion de esta cuenta creada
@@ -117,6 +161,7 @@
 				var amUsuario = document.getElementById("inputAM").value;
 				
 				var objetoUsuario = {
+					uid: uidUser,
 					email: correo, //variable
 					nombre: nombreUsuario,
 					aP: apUsuario,
@@ -127,8 +172,32 @@
 				firebase.database().ref('/usuarios/'+uidUser).set(objetoUsuario).then(function(mensaje){
 					alert('Usuario registrado correctamente');
 				},function(error){
-					alert('Ha sucedido un error con la petición');
+					alert('Ha sucedido un error registrando al usuario');
 				});
+				
+				if(cuentaUsuarioSeleccionado){
+					var seleccionMarca = document.getElementById("inputMarcasBicicletas");
+					var marcaBici = seleccionMarca.options[seleccionMarca.selectedIndex].text;
+					
+					var seleccionColor = document.getElementById("inputColores");
+					var colorBici = seleccionColor.options[seleccionColor.selectedIndex].text;
+					
+					var rodadaBici = document.getElementById("inputRodada").value;
+					
+					//OBTENER QR AQUI
+					var idBicicleta = "QRTEMPORAL"; //QR GENERADO, se puede usar UID y fecha y hora de registro
+					
+					var objetoBicicleta = {
+						id: idBicicleta, //QR Solo si no tiene caracteres especiales
+						marca: marcaBici,
+						color: colorBici,
+						rodada: rodadaBici,
+						uid: uidUser
+					};					
+					firebase.database().ref('/bicicletas/'+uidUser+'/'+idBicicleta).set(objetoBicicleta).catch(function(error){
+						alert('Ha sucedido un error registrando la bicicleta');
+					});					
+				}				
 			},function(error) {
 				var errorCode = error.code;
 				var errorMessage = error.message;
@@ -152,6 +221,9 @@
 					break;			
 				}				
 			  });
+			  }else{
+				  //No continuar el registro
+			  }
 			  
 		}else{
 			alert("Todos los campos son obligatorios");
@@ -197,13 +269,30 @@
 		inputMuestraNombre.innerHTML = perfil.nombre; //Se accede como atributo del objeto y se llena
 	}
 	
+	function listenerSelectTipoCuenta(){
+		document.getElementById("inputTipoCuenta").onchange = function(e) {
+			var divBici = document.getElementById("contenedorRegistroBici");			
+			if(this[this.selectedIndex].text != "usuario"){
+				divBici.style.display = "none";
+			}else{
+				divBici.style.display = "block";
+			}
+		};		
+	}
+	
+	function cuentaUsuarioSeleccionado(){
+		var seleccionaBici = document.getElementById("inputTipoCuenta");
+		return seleccionaBici.options[seleccionaBici.selectedIndex].text == "usuario"; 		
+	}	
+	
 	function initApp() {
 		// Auth state changes.
 		// [START authstatelistener]
 		firebase.auth().onAuthStateChanged(function(user){
 			if (user) {
 				getPerfilUsuario();
-			}else{
+				listenerSelectTipoCuenta();
+			}else{				
 				//No ha accedido el usuario y no puede acceder a esta página
 				$.ajax({ url: '../process/userManagement.php',
 					data: {action: 'logout',tipoCuenta: ''},
@@ -212,7 +301,7 @@
 						function() {
 							window.location.replace("http://cabi.dx.am/");
 						}
-				});
+				});				
               }
           });
 		  
@@ -229,6 +318,8 @@
 		  });
           initApp();
       };
+	  
+
 
   </script>
 </head>
@@ -250,7 +341,9 @@
 		<option value="admin">admin</option>
 	</select> <br>
 		
-	<h2>Bicicleta de Este Usuario</h2>
+	<div id="contenedorRegistroBici">
+
+	<h2>Registrar Bicicleta de Este Usuario</h2>
 	<!--Lista completa de marcas de bicicletas-->
 	<!--Lista obtenida de https://bikeindex.org/manufacturers-->
 	
@@ -1089,6 +1182,8 @@
 	</select> <br>
 	
 	<input id="inputRodada" type="number"  placeholder="Rodada"> <br>
+	
+	</div>
 	
 	<button id="btnRegistrarUsuario">Registrar usuario</button> <br>	
 	
