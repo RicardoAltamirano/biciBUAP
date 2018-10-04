@@ -175,7 +175,7 @@
 					alert('Ha sucedido un error registrando al usuario');
 				});
 				
-				if(cuentaUsuarioSeleccionado){
+				if(cuentaUsuarioSeleccionado()){
 					var seleccionMarca = document.getElementById("inputMarcasBicicletas");
 					var marcaBici = seleccionMarca.options[seleccionMarca.selectedIndex].text;
 					
@@ -226,7 +226,7 @@
 			  }
 			  
 		}else{
-			alert("Todos los campos son obligatorios");
+			alert("Llena los campos marcados como obligatorios");
 		}      
     }
 	
@@ -244,7 +244,6 @@
 			perfilRef.orderByValue().on('value', function(snapshot) {
 			//Se valida que exista nuestra consulta
 			  if (snapshot.exists()){
-				console.log('Busqueda ENCONTRADA');
 				//Cuando solo tenemos un solo valor porque accedimos con su UID
 					var objetoPerfil = snapshot.val();
 					actualizarPerfil(objetoPerfil);

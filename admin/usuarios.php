@@ -130,7 +130,6 @@
 			perfilRef.orderByValue().on('value', function(snapshot) {
 			//Se valida que exista nuestra consulta
 			  if (snapshot.exists()){
-				console.log('Busqueda ENCONTRADA');
 				//Cuando solo tenemos un solo valor porque accedimos con su UID
 					var objetoPerfil = snapshot.val();
 					actualizarPerfil(objetoPerfil);
@@ -214,6 +213,116 @@
           }
       }
 	  	
+	function getDatosUsuario(uid){
+		//Se crea una referencia a la rama /usuarios
+		var perfilRefUsuario = firebase.database().ref('/usuarios/'+uid);
+		//Consulta porque sabemos su uid (en la referencia) 
+		perfilRefUsuario.orderByValue().on('value', function(snapshot) {
+		//Se valida que exista nuestra consulta
+		  if (snapshot.exists()){
+				//Cuando solo tenemos un solo valor porque accedimos con su UID			
+				var objetoPerfil = snapshot.val();
+				mostrarDatosUsuario(objetoPerfil);
+			}else{
+				console.log('Busqueda no encontrada');
+			}
+		});
+	}
+	
+	function mostrarDatosUsuario(perfil){
+		var inputNombre = document.getElementById("inputNombre");
+		var inputAM = document.getElementById("inputAM");
+		var inputAP = document.getElementById("inputAP");
+		var inputTipoCuenta = document.getElementById("inputTipoCuenta");
+		
+		inputNombre.value = perfil.nombre; 
+		inputAM.value = perfil.aM; 
+		inputAP.value = perfil.aP; 
+		
+		switch(perfil.tipoCuenta){
+			case 'usuario':
+				inputTipoCuenta.selectedIndex = "0";
+			break;
+			
+			case 'visitante':
+				inputTipoCuenta.selectedIndex = "1";
+			break;
+			
+			case 'dasu':
+				inputTipoCuenta.selectedIndex = "2";
+			break;
+			
+			case 'admin':
+				inputTipoCuenta.selectedIndex = "3";
+			break;			
+		}
+	}
+		
+  function hayCamposVacios(){				
+		var nombreUsuario = document.getElementById("inputNombre").value;
+		var apUsuario = document.getElementById("inputAP").value;						
+		return nombreUsuario == "" || apUsuario == "";
+	}
+		
+	function actualizarDatosPerfil(uid){	
+		if(!hayCamposVacios()){
+			r = confirm('¿Actualizar los datos?');
+			if(r == true){										
+				var uidUser = uid;
+				
+				var seleccion = document.getElementById("inputTipoCuenta");
+				var tipoCuenta = seleccion.options[seleccion.selectedIndex].text;
+				
+				var nombreUsuario = document.getElementById("inputNombre").value;
+				var apUsuario = document.getElementById("inputAP").value;
+				var amUsuario = document.getElementById("inputAM").value;
+				
+				var objetoUsuario = {
+					nombre: nombreUsuario,
+					aP: apUsuario,
+					aM: amUsuario,
+					tipoCuenta: tipoCuenta
+				};				
+				
+				firebase.database().ref('/usuarios/'+uidUser).update(objetoUsuario).then(function(mensaje){
+					alert('Usuario actualizado correctamente');
+				},function(error){
+					alert('Ha sucedido un error actualizando los datos del usuario');
+				});
+				
+				//Codigo para actualizar la bici
+				/*
+					var seleccionMarca = document.getElementById("inputMarcasBicicletas");
+					var marcaBici = seleccionMarca.options[seleccionMarca.selectedIndex].text;
+					
+					var seleccionColor = document.getElementById("inputColores");
+					var colorBici = seleccionColor.options[seleccionColor.selectedIndex].text;
+					
+					var rodadaBici = document.getElementById("inputRodada").value;
+					
+					//OBTENER QR AQUI
+					var idBicicleta = "QRTEMPORAL"; //QR GENERADO, se puede usar UID y fecha y hora de registro
+					
+					var objetoBicicleta = {
+						id: idBicicleta, //QR Solo si no tiene caracteres especiales
+						marca: marcaBici,
+						color: colorBici,
+						rodada: rodadaBici,
+						uid: uidUser
+					};					
+					firebase.database().ref('/bicicletas/'+uidUser+'/'+idBicicleta).set(objetoBicicleta).catch(function(error){
+						alert('Ha sucedido un error registrando la bicicleta');
+					});					
+				*/				
+			  }else{
+				  //No continuar el registro
+			  }
+			  
+		}else{
+			alert("Llena los capos marcados como obligatorios");
+		}      
+    }
+		
 	function initApp() {
 		// Auth state changes.
 		// [START authstatelistener]
@@ -253,8 +362,29 @@
 			<?php
             if(isset($_GET["id"])){
                 if(!empty($_GET["id"])){					
-					$idPaciente = $_GET["id"];
+					$idUsuario = $_GET["id"];
+					echo"
+					<h2>Editar usuario</h2>
+					<input id='inputNombre' type='mail'  placeholder='nombre'> <br>
+					<input id='inputAP' type='text' placeholder='ap'> <br>
+					<input id='inputAM' type='text' placeholder='am'> <br>
+					<select id='inputTipoCuenta' name='inputTipoCuenta'>
+						<option value='usuario'>usuario</option>
+						<option value='visitante'>visitante</option>
+						<option value='dasu'>dasu</option>
+						<option value='admin'>admin</option>		
+					</select> <br>
+					";
+					?>
 					
+					<button id='btnActualizarDatos' onclick="actualizarDatosPerfil(<?php echo"'$idUsuario'" ?>);return false;">Actualizar datos</button>
+					
+					<script type='text/javascript'>
+						<?php
+							echo "getDatosUsuario('$idUsuario');";
+						?>
+					</script>					
+				<?php
 				}else{
 					echo"
                         <div id='contenedorInvalido'>
@@ -262,8 +392,7 @@
                             <p>El ID se encuentra vacío</p>
                         </div>
                     ";
-				}
-			
+				}			
 			}else{
 				//Mostrar tabla con usuarios
 				?>				
