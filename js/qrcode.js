@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------
 // QRCode for JavaScript
-// 
+//
 // Copyright (c) 2009 Kazuhiko Arase
 //
 // URL: http://www.d-project.com/

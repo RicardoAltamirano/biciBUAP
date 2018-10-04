@@ -1,4 +1,4 @@
-﻿/*
+/*
  *
  *
  */
@@ -136,6 +136,6 @@ if (typeof jQuery === 'undefined') {
 			$(".notify-backdrop").remove();
 			$el.remove();
 		}
-	 }
+	}
 }(jQuery);
 

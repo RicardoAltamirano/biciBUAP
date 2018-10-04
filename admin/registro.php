@@ -234,6 +234,7 @@
 					var colorBici = seleccionColor.options[seleccionColor.selectedIndex].text;
 					
 					var rodadaBici = document.getElementById("inputRodada").value;
+					rodadaBici = Number(rodadaBici);
 					
 					//Obtenemos fecha y hora
 					
@@ -247,7 +248,8 @@
 						color: colorBici,
 						rodada: rodadaBici,
 						uid: uidUser
-					};					
+					};		
+					console.log(objetoBicicleta);
 					firebase.database().ref('/bicicletas/'+uidUser+'/'+idBicicleta).set(objetoBicicleta).then(function(mensaje){						
 						jQuery('#qrCanvas').qrcode({
 							text	: idBicicleta
@@ -269,6 +271,7 @@
 						notificacion(' Bicicleta registrada corretamente','success','bell'); //'danger','warning','success' : 'close','exclamation','bell'
 						
 					},function(error){
+						console.log(error);
 						notificacion(' Ha sucedido un error registrando la bicicleta','danger','close'); //'danger','warning','success' : 'close','exclamation','bell'
 					});	
 				}				

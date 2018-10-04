@@ -1,11 +1,47 @@
+/*
+#00b5e2 azul claro
+#003b5c azul oscuro
+*/
+
 html{
 	font-family: 'Open Sans', sans-serif;
 	font-size: 95%;
+	margin: 0;
 }
 
 body{
 	font-family: 'Open Sans', sans-serif;
 	width: 100%;
+}
+
+.textoBlanco{
+	color: #fff;
+}
+
+.contenedorBlanco{
+	margin: 48px auto;
+	background: rgba(0, 59, 92, 0.65);
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+	border: 3px solid #00b5e2;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#contenedorAccesoUsuario{
+	width: 100%;
+	display: inline-block;
+}
+
+.contenedorCamposAcceso{
+	width: 35%;
+	margin: 0 auto;
+}
+
+.contenedorEtiquetaCampoAcceso{
+	width: 100%;
+	font-size: 1.1rem;
+    font-family: 'Open Sans', sans-serif;
+	display: inline-block;
 }
 
 button.aceptar{
@@ -99,6 +135,43 @@ h3{
 	margin-top: 10px;
 }
 
+/*Comienza blur*/
+.content:before {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  
+  display: block;
+  /*background-image: url('http://666a658c624a3c03a6b2-25cda059d975d2f318c03e90bcf17c40.r92.cf1.rackcdn.com/unsplash_527bf56961712_1.JPG');*/
+  
+  background: url('../img/biciInicio.jpg');
+  width: 100%;
+  min-height: 800px;
+  background-size: cover;
+  
+  /*
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  */
+  
+  -webkit-filter: blur(3px);
+  -moz-filter: blur(3px);
+  -o-filter: blur(3px);
+  -ms-filter: blur(3px);
+  filter: blur(3px);
+}
+
+.content {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 0;
+}
+
 @media screen and (max-width: 680px) {
 	.contenedorCampos{
 		width: 90%;
@@ -115,6 +188,12 @@ h3{
 	.contenedorCamposTabla{
 		width: 90%;
 		margin: 0 auto;
+	}
+	.contenedorCamposAcceso{
+		width: 90%;
+	}
+	.contenedorBlanco{
+		margin: 15px auto;
 	}
 }
 
@@ -134,5 +213,11 @@ h3{
 	.contenedorCamposTabla{
 		width: 90%;
 		margin: 0 auto;
+	}
+	.contenedorCamposAcceso{
+		width: 90%;
+	}
+	.contenedorBlanco{
+		margin: 15px auto;
 	}
 }

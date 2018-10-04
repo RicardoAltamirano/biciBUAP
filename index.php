@@ -32,7 +32,7 @@
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CABI</title>
   
   <!-- GOOGLE -->
@@ -129,6 +129,13 @@
 		}      
     }
 	
+	function enterPresionado(event) {
+		event.preventDefault();
+		if (event.keyCode === 13) {
+			document.getElementById("btnAccederConCorreo").click();
+		}
+	}
+	
 	function manejaUsuarioExistente(){
 		
 	var userId = firebase.auth().currentUser.uid;
@@ -184,6 +191,8 @@
           });
 		  document.getElementById('btnCerrarSesion').addEventListener('click', cerrarSesion, false);
 		  document.getElementById('btnAccederConCorreo').addEventListener('click', accederPorCorreo, false);
+		  document.getElementById("inputEmail").addEventListener("keyup", enterPresionado,false);
+		  document.getElementById("inputPass").addEventListener("keyup", enterPresionado,false);
       }
 
       window.onload = function() {
@@ -197,13 +206,24 @@
 </head>
 
 <body>
-	<h1>CABI: Control de Acceso de Bicicletas</h1>
-	
-	<h2>Ingresar</h2>
-	<input id="inputEmail" type="mail" class="form-control" placeholder="juan@mail.com">
-	<input id="inputPass" type="password" class="form-control" placeholder="*********">
-	<button id="btnAccederConCorreo">Acceder</button> 
-	<button id="btnCerrarSesion">Cerrar sesión</button>
+
+	<div class="content">		
+		<div class="contenedorCamposAcceso">
+			<div class="contenedorBlanco">
+				<h1 class="text-center espacioArriba textoBlanco" >CABI</h1>
+				<h2 class="text-center espacioArriba textoBlanco">Control de acceso de bicicletas</h1>
+				<h3 class="text-center espacioArriba textoBlanco">Acceso</h2>				
+				<div id="contenedorAccesoUsuario" class="text-center form-group required">
+					<div class="contenedorEtiquetaCampoAcceso text-left textoBlanco"><span><b>Email </b></span><label class='control-label'></label></div><input style="width:100%;" id="inputEmail" type="mail"  >
+					<div class="contenedorEtiquetaCampoAcceso text-left textoBlanco"><span><b>Contraseña </b></span><label class='control-label'></label></div><input style="width:100%;" id="inputPass" type="password"  > <br>
+				</div>
+				<div class="text-center">		
+					<button id="btnAccederConCorreo" class="btn btn-success aceptar" >Acceder</button>
+					<button id="btnCerrarSesion" class="btn btn-danger aceptar" >Cerrar sesión</button>			
+				</div>	
+			</div>
+		</div>
+	</div>
 	
 	<!-- Scripts de notificaciones -->
 	<script src="./js/notify.js"></script>

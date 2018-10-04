@@ -61,7 +61,7 @@
 				.css("border-collapse", "collapse")
 				.css('background-color', options.background);
 		  
-		 	// compute tileS percentage
+			// compute tileS percentage
 			var tileW	= options.width / qrcode.getModuleCount();
 			var tileH	= options.height / qrcode.getModuleCount();
 
