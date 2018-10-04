@@ -8,19 +8,19 @@
 				header('Location: ../index.php');
 			break;	
 			
-			case 'visitante': //Visitante
+			case 'VISITANTE': //Visitante
 				//header('Location: ./admin/registro.php');
 			break;
 			
-			case 'usuario': //Usuario
+			case 'USUARIO': //Usuario
 				//header('Location: ./admin/registro.php');
 			break;
 			
-			case 'dasu': //DASU
+			case 'DASU': //DASU
 				//header('Location: ./admin/registro.php');
 			break;
 			
-			case 'admin': //Admin
+			case 'ADMINISTRADOR': //Admin
 				//No hacer nada
 			break;
 		}
@@ -66,6 +66,28 @@
   <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase-database.js"></script>
+  
+  <!-- Font awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+  <!-- Bootstrap JS -->
+  <script src="../js/bootstrap.js"></script>
+  
+  <!-- Bootstrap Estilos -->
+  <link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="../css/estilo.css">
+  
+  <!--FUENTE CHIDA-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
+	  
+	<!-- Generador de QR -->
+	<script type="text/javascript" src="../js/jquery.qrcode.js"></script>
+	<script type="text/javascript" src="../js/qrcode.js"></script>
+	
+	<!-- Notificaciones -->
+	<link rel="stylesheet" type="text/css" href="../css/notify.css">
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css">
+  
   <script>
   
 	/*
@@ -115,6 +137,8 @@
 		messagingSenderId: "669947592480"
 	  };
       firebase.initializeApp(config);
+	  
+	  var secondaryApp = firebase.initializeApp(config, "Secondary");
 	  	
 	function getPerfilUsuario(){
 		//Obtenemos el uid del usuario que está ya loggeado
@@ -173,16 +197,41 @@
       function eliminarFilas(){
           var location = window.location.href;
           if(!location.includes("id")){
-              var Table = document.getElementById("tablaUsuarios");
+              var Table = document.getElementById("tableDatosUsuario");
               Table.innerHTML = "";
           }
       }
 	  	  
+	/*
+	function isUserDisabled(uid){
+		var user = firebase.auth().getUser(uid).then(function(){
+			//Se obtuvo el usuario
+			console.log(user.disabled);
+		},function(){
+			//No se pudo obtener dicho usuario
+		});
+	}
+		  
+	function suspenderCuenta(uid){		
+		var user = firebase.auth().getUser(uid).then(function(){
+			//Se obtuvo el usuario
+			user.updateProfile({
+				disabled: true
+			}).then(function(mensaje) {
+			  alert('El usuario se ha suspendido correctamente');
+			},function(error) {
+			  // An error happened.
+			});
+		},function(){
+			//No se pudo obtener dicho usuario
+		});
+	}
+	*/
+		  
       function crearFila(usuario){
-
           var location = window.location.href;
           if(!location.includes("id")){
-              var table = document.getElementById("tablaUsuarios");
+              var table = document.getElementById("tableDatosUsuario");
               var noFilas = table.rows.length;
               var row = table.insertRow(noFilas);
               var celdaTipoCuenta = row.insertCell(0);
@@ -191,6 +240,7 @@
 			  var celdaAM = row.insertCell(3);
 			  var celdaEmail = row.insertCell(4);
 			  var celdaBtnVer = row.insertCell(5);
+			  //var celdaBtnSuspender = row.insertCell(6);
 
 			  celdaTipoCuenta.innerHTML = usuario.tipoCuenta;
 			  celdaNombre.innerHTML = usuario.nombre;
@@ -199,17 +249,30 @@
 			  celdaEmail.innerHTML = usuario.email;
 			  
               //Creando boton ver/editar
-              var btnVer = document.createElement("BUTTON");
-              //btnVer.className = "btn btn-outline-primary";
+              var btnVer = document.createElement("BUTTON");			  
+			  btnVer.className = "btn btn-info celdaBoton";
               btnVer.onclick = function(){
                   window.location.assign("http://cabi.dx.am/admin/usuarios.php?id="+usuario.uid);
               };
 			  
-              var t = document.createTextNode("Ver/Editar");
-              btnVer.appendChild(t);			  
+              var tVer = document.createTextNode("Ver/Editar");
+			  
+			  //Creando boton suspender cuenta
+			  /*
+              var btnSuspender = document.createElement("BUTTON");
+			  btnSuspender.className = "btn btn-danger celdaBoton";
+			  btnSuspender.onclick = suspenderCuenta(usuario.uid);
+			  
+			  var tSuspender = document.createTextNode("Suspender");
+			  */
+			  
+			  //Add texto
+              btnVer.appendChild(tVer);		
+			  //btnSuspender.appendChild(tSuspender);				  
 
-              //Añadiento boton a documento
+              //Add boton a documento
               celdaBtnVer.appendChild(btnVer);
+			  //celdaBtnSuspender.appendChild(btnSuspender);
           }
       }
 	  	
@@ -240,19 +303,19 @@
 		inputAP.value = perfil.aP; 
 		
 		switch(perfil.tipoCuenta){
-			case 'usuario':
+			case 'USUARIO':
 				inputTipoCuenta.selectedIndex = "0";
 			break;
 			
-			case 'visitante':
+			case 'VISITANTE':
 				inputTipoCuenta.selectedIndex = "1";
 			break;
 			
-			case 'dasu':
+			case 'DASU':
 				inputTipoCuenta.selectedIndex = "2";
 			break;
 			
-			case 'admin':
+			case 'ADMINISTRADOR':
 				inputTipoCuenta.selectedIndex = "3";
 			break;			
 		}
@@ -264,6 +327,7 @@
 		return nombreUsuario == "" || apUsuario == "";
 	}
 		
+		
 	function actualizarDatosPerfil(uid){	
 		if(!hayCamposVacios()){
 			r = confirm('¿Actualizar los datos?');
@@ -272,6 +336,11 @@
 				
 				var seleccion = document.getElementById("inputTipoCuenta");
 				var tipoCuenta = seleccion.options[seleccion.selectedIndex].text;
+				
+				/*
+				var correo = document.getElementById('inputEmail').value;
+				var pass = document.getElementById('inputPass').value;	
+				*/
 				
 				var nombreUsuario = document.getElementById("inputNombre").value;
 				var apUsuario = document.getElementById("inputAP").value;
@@ -282,12 +351,26 @@
 					aP: apUsuario,
 					aM: amUsuario,
 					tipoCuenta: tipoCuenta
-				};				
+				};
+
+				/* Para cambiar email y password se debe reautenticar con una segunda instancia de BD
+				secondaryApp.auth().signInWithEmailAndPassword(correo, pass).then(function(user){
+					user.updateEmail('newyou@domain.com');
+				});				
+				
+				var objetoUsuario = {
+					email: correo, //variable
+					nombre: nombreUsuario,
+					aP: apUsuario,
+					aM: amUsuario,
+					tipoCuenta: tipoCuenta
+				};	
+				*/				
 				
 				firebase.database().ref('/usuarios/'+uidUser).update(objetoUsuario).then(function(mensaje){
-					alert('Usuario actualizado correctamente');
+					notificacion(' Usuario actualizado correctamente','success','bell'); //'danger','warning','success' : 'close','exclamation','bell'
 				},function(error){
-					alert('Ha sucedido un error actualizando los datos del usuario');
+					notificacion(' Ha sucedido un error actualizando los datos del usuario','danger','close'); //'danger','warning','success' : 'close','exclamation','bell'
 				});
 				
 				//Codigo para actualizar la bici
@@ -319,9 +402,17 @@
 			  }
 			  
 		}else{
-			alert("Llena los capos marcados como obligatorios");
+			notificacion(' Llena los capos marcados como obligatorios','warning','exclamation'); //'danger','warning','success' : 'close','exclamation','bell'
 		}      
     }
+		
+	function handleInput(e) {
+	   var ss = e.target.selectionStart;
+	   var se = e.target.selectionEnd;
+	   e.target.value = e.target.value.toUpperCase();
+	   e.target.selectionStart = ss;
+	   e.target.selectionEnd = se;
+	}	
 		
 	function initApp() {
 		// Auth state changes.
@@ -357,28 +448,58 @@
 </head>
 
 <body>
-	<h1>Usuarios</h1>
-	<p>Bienvenido <span id="inputMuestraNombre">Nombre<span></p>
+
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	  </button>
+	  <a class="navbar-brand" href="registro.php">CABI</a>
+
+	  <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+		<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+		  <li class="nav-item">
+			<a class="nav-link" href="registro.php">Registro </a>
+		  </li>
+		  <li class="nav-item active">
+			<a class="nav-link" href="usuarios.php">Usuarios</a>
+		  </li>
+		</ul>
+		<form class="form-inline my-2 my-lg-0">
+		  <button id="btnCerrarSesion" class="btn btn-danger my-2 my-sm-0" >Cerrar sesión <i class="fa fa-sign-out"></i></button>
+		</form>
+	  </div>
+	</nav>
+
+	<h1 class="text-center espacioArriba">BIENVENIDO <span id="inputMuestraNombre"><span></h1>
+	<h2 class="text-center espacioArriba">Usuarios</h2>
 			<?php
             if(isset($_GET["id"])){
                 if(!empty($_GET["id"])){					
 					$idUsuario = $_GET["id"];
 					echo"
-					<h2>Editar usuario</h2>
-					<input id='inputNombre' type='mail'  placeholder='nombre'> <br>
-					<input id='inputAP' type='text' placeholder='ap'> <br>
-					<input id='inputAM' type='text' placeholder='am'> <br>
-					<select id='inputTipoCuenta' name='inputTipoCuenta'>
-						<option value='usuario'>usuario</option>
-						<option value='visitante'>visitante</option>
-						<option value='dasu'>dasu</option>
-						<option value='admin'>admin</option>		
-					</select> <br>
+					<div class='contenedorCampos'>
+						<h3 class='espacioArriba'>Actualizar usuario</h3>
+						<div id='contenedorRegistroUsuario' class='text-center form-group required'>
+							<!--
+							<div class='contenedorEtiquetaCampo text-left'><span><b>Email </b></span><label class='control-label'></label></div><input id='inputEmail' type='mail'  >
+							<div class='contenedorEtiquetaCampo text-left'><span><b>Contraseña </b></span><label class='control-label'></label></div><input id='inputPass' type='password'  >
+							-->
+							<div class='contenedorEtiquetaCampo text-left'><span><b>Nombre(s) </b></span><label class='control-label'></label></div><input id='inputNombre' type='mail'   oninput='handleInput(event)'>
+							<div class='contenedorEtiquetaCampo text-left'><span><b>Apellido paterno </b></span><label class='control-label'></label></div><input id='inputAP' type='text'  oninput='handleInput(event)'>
+							<div class='contenedorEtiquetaCampo text-left'><span><b>Apellido materno </b></span></div><input id='inputAM' type='text' oninput='handleInput(event)'>
+							<div class='contenedorEtiquetaCampo text-left'><span><b>Tipo de cuenta </b></span></div><select id='inputTipoCuenta' name='inputTipoCuenta'>
+								<option value='USUARIO'>USUARIO</option>
+								<option value='VISITANTE'>VISITANTE</option>
+								<option value='DASU'>DASU</option>
+								<option value='ADMINISTRADOR'>ADMINISTRADOR</option>
+							</select> <br>	
+						</div>
 					";
 					?>
-					
-					<button id='btnActualizarDatos' onclick="actualizarDatosPerfil(<?php echo"'$idUsuario'" ?>);return false;">Actualizar datos</button>
-					
+						<div class="text-center">
+						<button id='btnActualizarDatos' class="btn btn-success aceptar" onclick="actualizarDatosPerfil(<?php echo"'$idUsuario'" ?>);return false;">Actualizar datos</button>
+						</div>
+					</div>
 					<script type='text/javascript'>
 						<?php
 							echo "getDatosUsuario('$idUsuario');";
@@ -388,7 +509,7 @@
 				}else{
 					echo"
                         <div id='contenedorInvalido'>
-                            <h2>ID inválido</h2>
+                            <h3>ID inválido</h3>
                             <p>El ID se encuentra vacío</p>
                         </div>
                     ";
@@ -396,40 +517,64 @@
 			}else{
 				//Mostrar tabla con usuarios
 				?>				
-				<h2>Estos son todos los usuarios</h2>
-				<table>
-					<thead>
-					  <tr>
-						<th>Tipo Cuenta</th>
-						<th>Nombre</th>
-						<th>AP</th>
-						<th>AM</th>
-						<th>Correo</th>
-						<th>Ver/Editar</th>
-					  </tr>
-					</thead>
-				</table>
-				<table id='tablaUsuarios'>
-				  <tbody>
-					  <!-- Datos Insertados en java script -->
-				  </tbody>
-				</table>				
+				<div class='contenedorCamposTabla'>
+					<h3 class='espacioArriba'>Todos los usuarios</h3>
+					<input class="form-control" id="inputBusqueda" type="text" placeholder="Busca un usuario..."><br>
+					<div class="table-responsive">
+						<table id="tablaUsuarios" class="table table-bordered">
+							<thead class="thead-light">
+							  <tr>
+								<th scope="col">Tipo Cuenta</th>
+								<th scope="col">Nombre</th>
+								<th scope="col">AP</th>
+								<th scope="col">AM</th>
+								<th scope="col">Correo</th>
+								<th scope="col">Ver/Editar</th>
+								<!--
+								<th scope="col">Suspender</th>
+								-->
+							  </tr>
+							</thead>					
+							<tbody id='tableDatosUsuario'>
+								<!-- Datos Insertados en java script -->
+							</tbody>
+					  </table>
+				  </div>
+				</div>
 		<?php } ?>
-	
-	
-	<button id="btnCerrarSesion">Cerrar sesión</button>
-	
-	
+
+	<!-- Scripts de notificaciones -->
+	<script src="../js/notify.js"></script>
+    <script src="../js/prettify.js"></script>		
+		
   <!-- End custom js for this page-->
   <script type="text/javascript">
-      function handleSignOut() {
+	function notificacion(mensaje,tipo,icono){			
+		$.notify(mensaje, 
+		{
+			type: tipo, //'danger','warning','success'
+			delay: 6000,
+			animation : true,
+			close: true,
+			icon: icono //'close','exclamation','bell'					
+		});			
+	}
+	  
+	  function handleSignOut() {
           var googleAuth = gapi.auth2.getAuthInstance();
           googleAuth.signOut().then(function() {
               firebase.auth().signOut();
           });
-      }
+      }	  
 	  
-	  
+	  $(document).ready(function(){
+		  $("#inputBusqueda").on("keyup", function() {
+			var value = $(this).val().toLowerCase();
+			$("#tableDatosUsuario tr").filter(function() {
+			  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			});
+		  });
+		});	  
   </script>
 </body>
 

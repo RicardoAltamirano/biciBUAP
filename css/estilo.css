@@ -1,0 +1,138 @@
+html{
+	font-family: 'Open Sans', sans-serif;
+	font-size: 95%;
+}
+
+body{
+	font-family: 'Open Sans', sans-serif;
+	width: 100%;
+}
+
+button.aceptar{
+	margin: 10px auto;
+	width: 50%;	
+}
+
+#qrCanvas{
+	margin: 0 auto;
+}
+
+.celdaBoton{
+	width: 90%;
+	margin: 0 auto;
+}
+
+.espacioArriba{
+	margin-top: 5px;
+}
+
+.contenedorCampos{
+	width: 45%;
+	margin: 0 auto;
+}
+
+.contenedorCamposTabla{
+	width: 80%;
+	margin: 0 auto;
+}
+
+.form-group.required .control-label:after { 
+   content:"*";
+   color:red;
+}
+
+#contenedorRegistroUsuario{
+	width: 100%;
+	display: inline-block;
+}
+
+.contenedorEtiquetaCampo{
+	width: 30%;
+	font-size: 1.1rem;
+    font-family: 'Open Sans', sans-serif;
+	display: inline-block;
+}
+
+input{
+	display: inline-block;
+	width: 69.5%;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+    border-radius: 4px;
+	font-size: 1.1rem;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+select{ 
+	width: 69.5%;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+    border-radius: 4px;
+	font-size: 1.1rem;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1{
+	font-family: 'Open Sans', sans-serif;
+	font-size: 2.2rem;
+}
+
+h2{
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1.9em;
+}
+
+h3{
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1.4rem;
+}
+
+.segundoTitulo{
+	margin-top: 10px;
+}
+
+@media screen and (max-width: 680px) {
+	.contenedorCampos{
+		width: 90%;
+	}
+	.contenedorEtiquetaCampo{
+		width: 100%;
+	}
+	input{
+		width: 100%;
+	}
+	select{ 
+		width: 100%;
+	}
+	.contenedorCamposTabla{
+		width: 90%;
+		margin: 0 auto;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.contenedorCampos{
+		width: 90%;
+	}
+	.contenedorEtiquetaCampo{
+		width: 100%;
+	}
+	input{
+		width: 100%;
+	}
+	select{ 
+		width: 100%;
+	}
+	.contenedorCamposTabla{
+		width: 90%;
+		margin: 0 auto;
+	}
+}

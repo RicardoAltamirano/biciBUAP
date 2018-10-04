@@ -8,19 +8,19 @@
 				//header('Location: ./error/cuenta.php');
 			break;	
 			
-			case 'visitante': //Visitante
+			case 'VISITANTE': //Visitante
 				//header('Location: ./admin/registro.php');
 			break;
 			
-			case 'usuario': //Usuario
+			case 'USUARIO': //Usuario
 				//header('Location: ./admin/registro.php');
 			break;
 			
-			case 'dasu': //DASU
+			case 'DASU': //DASU
 				//header('Location: ./admin/registro.php');
 			break;
 			
-			case 'admin': //Admin
+			case 'ADMINISTRADOR': //Admin
 				header('Location: ./admin/registro.php');
 			break;
 		}
@@ -63,6 +63,24 @@
   <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase-database.js"></script>
+  
+  <!-- Font awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+  <!-- Bootstrap JS -->
+  <script src="./js/bootstrap.js"></script>
+  
+  <!-- Bootstrap Estilos -->
+  <link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="./css/estilo.css">
+  
+  <!--FUENTE CHIDA-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
+  
+  <!-- Notificaciones -->
+	<link rel="stylesheet" type="text/css" href="./css/notify.css">
+    <link rel="stylesheet" type="text/css" href="./css/prettify.css">
+  
   <script>
       // Initialize Firebase
       var config = {
@@ -81,7 +99,7 @@
 				
 		if(email != "" && pass != ""){
 			firebase.auth().signInWithEmailAndPassword(email,pass).then(function(credencial){
-				alert('Iniciaste sesión correctamente');
+				notificacion(' ¡Bienvenido!','success','bell'); //'danger','warning','success' : 'close','exclamation','bell'
 			},			
 			function(error) {
 				var errorCode = error.code;
@@ -90,24 +108,24 @@
 				
 				switch(errorCode){
 					case 'auth/invalid-email':
-						alert("El email es inválido");
+						notificacion(' El email ingresado es inválido','warning','exclamation'); //'danger','warning','success' : 'close','exclamation','bell'
 					break;
 					case 'auth/user-disabled':
-						alert("Usuario deshabilitado");
+						notificacion(' Usuario deshabilitado','warning','exclamation'); //'danger','warning','success' : 'close','exclamation','bell'
 					break;
 					case 'auth/user-not-found':
-						alert("Usuario no encontrado");
+						notificacion(' Usuario no encontrado','warning','exclamation'); //'danger','warning','success' : 'close','exclamation','bell'
 					break;
 					case 'auth/wrong-password':
-						alert("La contraseña es incorrecta");
+						notificacion(' La contraseña es incorrecta','warning','exclamation'); //'danger','warning','success' : 'close','exclamation','bell'
 					break;
 					default:
-						alert("Se ha producido un error. Intenta más tarde.");
+						notificacion(' Se ha producido un error, intenta más tarde','warning','exclamation'); //'danger','warning','success' : 'close','exclamation','bell'
 					break;			
 				}				
 			  });
 		}else{
-			alert("Todos los campos son obligatorios");
+			notificacion(' Todos los campos son obligatorios','warning','exclamation'); //'danger','warning','success' : 'close','exclamation','bell'
 		}      
     }
 	
@@ -120,16 +138,16 @@
         if (snapshot.exists()){
 			var tipoCuentaActual = (snapshot.val() && snapshot.val().tipoCuenta) || 'Anonymous';
 			switch(tipoCuentaActual){
-				case 'visitante':
+				case 'VISITANTE':
 					alert('Aún no existe esta página');
 					break;
-				case 'usuario':
+				case 'USUARIO':
 					alert('Aún no existe esta página');
 					break;
-				case 'dasu':
+				case 'DASU':
 					alert('Aún no existe esta página');
 					break;
-				case 'admin':
+				case 'ADMINISTRADOR':
 					//Es Admin
 					//Redirijimos a la cuenta de admin
 					$.ajax({ url: './process/userManagement.php',
@@ -158,11 +176,6 @@
 					document.getElementById('btnCerrarSesion').disabled = false;
 					document.getElementById('btnAccederConCorreo').disabled = true;
 					manejaUsuarioExistente();
-                  // User is signed in
-				  /*
-                  protocoloDeSeguridad();
-                  getPerfilUsuario();
-				  */
               } else {
 					console.log("El usuario no ha iniciado sesión");
 					document.getElementById('btnCerrarSesion').disabled = true;
@@ -184,18 +197,32 @@
 </head>
 
 <body>
-	<p>Hola mundo! Esto es CABI</p>
+	<h1>CABI: Control de Acceso de Bicicletas</h1>
 	
-	<p>Ingresar</p>
+	<h2>Ingresar</h2>
 	<input id="inputEmail" type="mail" class="form-control" placeholder="juan@mail.com">
 	<input id="inputPass" type="password" class="form-control" placeholder="*********">
 	<button id="btnAccederConCorreo">Acceder</button> 
 	<button id="btnCerrarSesion">Cerrar sesión</button>
 	
+	<!-- Scripts de notificaciones -->
+	<script src="./js/notify.js"></script>
+    <script src="./js/prettify.js"></script>
 	
   <!-- End custom js for this page-->
   <script type="text/javascript">
-      function cerrarSesion() {
+      function notificacion(mensaje,tipo,icono){			
+		$.notify(mensaje, 
+		{
+			type: tipo, //'danger','warning','success'
+			delay: 6000,
+			animation : true,
+			close: true,
+			icon: icono //'close','exclamation','bell'					
+		});			
+	}
+	  
+	  function cerrarSesion() {
           var googleAuth = gapi.auth2.getAuthInstance();
           googleAuth.signOut().then(function() {
               firebase.auth().signOut();
